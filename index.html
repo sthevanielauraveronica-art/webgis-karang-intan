@@ -1,0 +1,2911 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WebGIS Dinamika Spasial Urban Karang Intan</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+ /* HEADER WEBGIS */
+.main-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+    padding: 22px 5%;
+    background-color: #173c56;
+    color: #ffffff;
+}
+
+/* KONTEN JUDUL */
+.header-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.header-content h1 {
+    margin: 0;
+    font-size: 30px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: #ffffff;
+    text-shadow:
+        1px 1px 0 #b8cbd8,
+        2px 2px 0 #91a9b9,
+        3px 3px 0 #6d8799,
+        4px 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* NAMA WILAYAH */
+.location-info {
+    display: table;
+    margin: 8px 0 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #ffffff;
+    font-size: 13px;
+    color: #dceaf3;
+}
+
+/* IDENTITAS PENGEMBANG */
+.author-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-top: 10px;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.author-label {
+    white-space: nowrap;
+    min-width: 106px;
+}
+
+.author-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.author-detail span {
+    line-height: 1.4;
+}
+
+/* LOGO ULM */
+.logo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    gap: 5px;
+    margin-left: 12px;
+}
+
+.main-header .logo-ulm {
+    display: block;
+    width: 90px;
+    height: 90px;
+    object-fit: contain;
+}
+
+.logo-container span {
+    font-size: 10px;
+    font-weight: 600;
+    color: #ffffff;
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+    .main-header {
+        padding: 18px 20px;
+        gap: 10px;
+    }
+
+    .header-content h1 {
+        font-size: 17px;
+        letter-spacing: 0.5px;
+    }
+
+    .location-info {
+        font-size: 10px;
+    }
+
+    .author-info {
+        font-size: 10px;
+        gap: 5px;
+    }
+
+    .author-label {
+        min-width: auto;
+    }
+
+    .main-header .logo-ulm {
+        width: 36px;
+        height: 36px;
+    }
+
+    .logo-container {
+        margin-left: 4px;
+        gap: 3px;
+    }
+
+    .logo-container span {
+        font-size: 7px;
+        white-space: normal;
+        max-width: 65px;
+    }
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #f3f6f9;
+    color: #263746;
+}
+
+header {
+    background: #173b57;
+    color: white;
+    padding: 22px 5%;
+}
+
+header h1 { font-size: 22px; }
+header p { font-size: 12px; color: #d6e2ec; margin-top: 5px; }
+
+nav {
+    background: #102d43;
+    padding: 12px 5%;
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+nav a:hover { color: #f5c542; }
+
+.container {
+    width: 92%;
+    max-width: 1500px;
+    margin: 25px auto;
+}
+
+.section-title {
+    color: #173b57;
+    font-size: 20px;
+    margin-bottom: 12px;
+}
+
+.section-description {
+    font-size: 13px;
+    color: #64748b;
+    line-height: 1.7;
+    margin-bottom: 20px;
+}
+
+.about-box, .source-box {
+    background: white;
+    padding: 22px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    border: 1px solid #e2e8f0;
+}
+
+.about-box p, .source-box p {
+    font-size: 13px;
+    line-height: 1.8;
+    text-align: justify;
+}
+
+.map-layout {
+    display: grid;
+    grid-template-columns: 285px minmax(0, 1fr);
+    gap: 18px;
+}
+
+.sidebar {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    height: fit-content;
+}
+
+.sidebar h3 {
+    color: #173b57;
+    font-size: 15px;
+    margin-bottom: 15px;
+}
+
+.layer-group { margin-bottom: 20px; }
+
+.layer-group h4 {
+    font-size: 13px;
+    margin-bottom: 10px;
+    color: #475569;
+}
+
+.layer-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 11px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.layer-option input {
+    margin-top: 3px;
+    accent-color: #173b57;
+}
+
+.map-wrapper {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    min-width: 0;
+}
+
+#map { width: 100%; height: 590px; }
+
+.map-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background: white;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+button {
+    background: #173b57;
+    color: white;
+    border: none;
+    padding: 9px 13px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 11px;
+}
+
+button:hover { background: #245777; }
+/* =================================
+   TOMBOL PANDUAN
+================================= */
+
+.guide-button {
+    background: #e6a23c;
+    color: #173b57;
+    font-weight: 600;
+}
+
+.guide-button:hover {
+    background: #f5c46b;
+}
+
+/* =================================
+   JENDELA PANDUAN
+================================= */
+
+.guide-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(10, 25, 40, 0.65);
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.guide-modal {
+    background: #ffffff;
+    width: 100%;
+    max-width: 680px;
+    max-height: 85vh;
+    overflow-y: auto;
+    border-radius: 12px;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.3);
+}
+
+.guide-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 22px;
+    background: #173b57;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+.guide-header h3 {
+    font-size: 17px;
+}
+
+.guide-close {
+    background: #ffffff;
+    color: #173b57;
+    font-size: 18px;
+    font-weight: 700;
+    padding: 4px 11px;
+}
+
+.guide-content {
+    padding: 22px;
+}
+
+.guide-intro {
+    font-size: 12px;
+    color: #64748b;
+    line-height: 1.8;
+    margin-bottom: 18px;
+    text-align: justify;
+}
+
+.guide-item {
+    display: flex;
+    gap: 13px;
+    padding: 13px 0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.guide-number {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e8f0f6;
+    color: #173b57;
+    font-weight: 700;
+    font-size: 12px;
+    border-radius: 50%;
+}
+
+.guide-item h4 {
+    font-size: 13px;
+    color: #173b57;
+    margin-bottom: 4px;
+}
+
+.guide-item p {
+    font-size: 11px;
+    line-height: 1.7;
+    color: #64748b;
+    text-align: justify;
+}
+
+.guide-footer {
+    padding: 14px 22px;
+    background: #f3f6f9;
+    color: #64748b;
+    font-size: 10px;
+    text-align: center;
+}
+
+@media(max-width: 600px) {
+    .guide-modal {
+        max-height: 90vh;
+    }
+
+    .guide-content {
+        padding: 15px;
+    }
+
+    .guide-header h3 {
+        font-size: 14px;
+    }
+}
+button:disabled { opacity: 0.5; cursor: wait; }
+
+#status {
+    font-size: 11px;
+    color: #64748b;
+}
+
+.legend {
+    background: white;
+    padding: 10px 12px;
+    border-radius: 6px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.2);
+    font-size: 10px;
+    line-height: 1.8;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.legend-title {
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #173b57;
+}
+
+.legend-row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.legend-color {
+    width: 17px;
+    height: 10px;
+    border: 1px solid rgba(0,0,0,0.15);
+    flex-shrink: 0;
+}
+
+.coordinate-info {
+    background: white;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 10px;
+}
+
+.comparison-section {
+    margin-top: 30px;
+    display: none;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+}
+
+.comparison-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+    gap: 10px;
+}
+
+.comparison-header h3 {
+    color: #173b57;
+    font-size: 17px;
+}
+
+.comparison-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.comparison-card { min-width: 0; }
+
+.comparison-card h4 {
+    color: #173b57;
+    text-align: center;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.compare-map {
+    height: 300px;
+    width: 100%;
+    border: 1px solid #dce3e8;
+    border-radius: 6px;
+}
+
+.comparison-options {
+    font-size: 13px;
+    display: flex;
+    gap: 22px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 14px 0 18px;
+    padding: 12px 16px;
+    background: #f1f5f9;
+    border: 1px solid #dce3e8;
+    border-radius: 8px;
+}
+
+/* LEGENDA GABUNGAN PETA PERBANDINGAN */
+.comparison-legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 12px 15px;
+    margin: 0 0 18px;
+    background: #ffffff;
+    border: 1px solid #dce3e8;
+    border-radius: 8px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.08);
+}
+
+.comparison-legend:empty {
+    display: none;
+}
+
+.comparison-legend .legend {
+    position: static;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    max-height: none;
+    overflow: visible;
+    padding: 0;
+    box-shadow: none;
+    background: transparent;
+}
+
+.comparison-legend .legend-group {
+    min-width: 180px;
+}
+
+.comparison-legend .legend-title {
+    margin-bottom: 6px;
+    font-size: 11px;
+}
+
+.comparison-legend .legend-row {
+    font-size: 10px;
+    margin-bottom: 3px;
+}
+
+.comparison-options label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.statistik-box, .grafik-card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+}
+
+.statistik-box { margin-bottom: 22px; }
+
+.statistik-box h3, .grafik-card h3 {
+    color: #173b57;
+    font-size: 15px;
+    margin-bottom: 12px;
+}
+
+.statistik-table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 500px;
+    font-size: 12px;
+}
+
+.statistik-table th, .statistik-table td {
+    padding: 12px;
+    border: 1px solid #dce3e8;
+    text-align: center;
+}
+
+.statistik-table th {
+    background: #173b57;
+    color: white;
+}
+
+.statistik-table td:first-child {
+    text-align: left;
+    font-weight: 500;
+}
+
+.statistik-table tr:nth-child(even) { background: #f5f8fa; }
+
+.table-scroll { overflow-x: auto; }
+
+.keterangan-statistik {
+    font-size: 11px;
+    color: #64748b;
+    margin-top: 12px;
+    line-height: 1.6;
+}
+
+.grafik-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.grafik-card { min-width: 0; }
+
+.grafik-card p {
+    color: #64748b;
+    font-size: 11px;
+    margin-bottom: 18px;
+    line-height: 1.6;
+}
+
+.grafik-area {
+    position: relative;
+    width: 100%;
+    height: 310px;
+}
+
+.grafik-card:last-child { grid-column: 1 / -1; }
+
+#statusAnalisis {
+    font-size: 11px;
+    color: #64748b;
+    margin-top: 12px;
+}
+
+.source-box { margin-top: 25px; }
+.source-box h3 { font-size: 15px; color: #173b57; margin-bottom: 12px; }
+
+footer {
+    margin-top: 40px;
+    background: #102d43;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    font-size: 11px;
+}
+
+@media(max-width: 950px) {
+    .map-layout { grid-template-columns: 1fr; }
+    .comparison-grid { grid-template-columns: 1fr; }
+    .compare-map { height: 350px; }
+}
+
+@media(max-width: 700px) {
+    header h1 { font-size: 17px; }
+    .grafik-grid { grid-template-columns: 1fr; }
+    .grafik-card:last-child { grid-column: auto; }
+    #map { height: 450px; }
+}
+.search-desa {
+    margin-bottom: 22px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.search-desa h4 {
+    font-size: 13px;
+    margin-bottom: 10px;
+    color: #173b57;
+}
+
+.search-desa input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 5px;
+    font-family: inherit;
+    font-size: 11px;
+    margin-bottom: 8px;
+}
+
+.search-desa button {
+    width: 100%;
+}
+
+#hasilCariDesa {
+    font-size: 10px;
+    margin-top: 8px;
+    color: #64748b;
+    line-height: 1.5;
+}
+.info-hover {
+    background: #ffffff;
+    color: #173b57;
+    border: 1px solid #173b57;
+    border-radius: 6px;
+    padding: 9px 12px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    font-size: 11px;
+    line-height: 1.7;
+    min-width: 130px;
+}
+
+.info-hover::before {
+    border-top-color: #173b57;
+}
+.location-info {
+    display: inline-block;
+    margin-bottom: 0;
+}
+
+.location-info {
+    display: table;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #ffffff;
+    margin-bottom: 8px;
+}
+
+.author-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 500;
+}
+.header-content h1 {
+    font-size: 30px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: #ffffff;
+
+    text-shadow:
+        1px 1px 0 #b8cbd8,
+        2px 2px 0 #91a9b9,
+        3px 3px 0 #6d8799,
+        4px 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* NAMA WILAYAH */
+.header-content .location-info {
+    display: table;
+    width: auto;
+    margin: 8px 0 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #ffffff;
+
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    color: #dceaf3;
+    font-weight: 400;
+}
+
+/* IDENTITAS PENGEMBANG */
+.header-content .author-info {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 12px;
+
+    width: fit-content;
+    margin-top: 9px;
+    padding: 0;
+    border: none;
+
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
+/* LABEL DI SEBELAH KIRI */
+.author-label {
+    display: block;
+    white-space: nowrap;
+    min-width: 106px;
+}
+
+/* NAMA DAN NIM DI SEBELAH KANAN */
+.author-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.author-detail span {
+    display: block;
+    line-height: 1.4;
+}
+</style>
+</head>
+
+<body>
+
+<header class="main-header">
+
+    <div class="header-content">
+        <h1>WEBGIS DINAMIKA SPASIAL URBAN</h1>
+
+        <p class="location-info">
+            Kecamatan Karang Intan, Kabupaten Banjar, Kalimantan Selatan
+        </p>
+
+        <div class="author-info">
+            <span class="author-label">Dikembangkan Oleh:</span>
+
+            <div class="author-detail">
+                <span>Laura Veronica Stefany</span>
+                <span>2410416120011</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="logo-container">
+        <img src="logo_ulm.png"
+             alt="Logo Universitas Lambung Mangkurat"
+             class="logo-ulm">
+
+        <span>Universitas Lambung Mangkurat</span>
+    </div>
+
+</header>
+
+<nav>
+    <a href="#tentang">Tentang WebGIS</a>
+    <a href="#peta">Peta Interaktif</a>
+    <a href="#analisis">Analisis Spasial</a>
+</nav>
+
+<div class="container">
+
+<section id="tentang" class="about-box">
+    <h2 class="section-title">Tentang WebGIS</h2>
+    <p>
+        WebGIS ini menyajikan informasi dinamika spasial urban
+        di Kecamatan Karang Intan, Kabupaten Banjar, Kalimantan Selatan.
+        Analisis dilakukan dengan membandingkan jaringan jalan,
+        kepadatan penduduk, dan penggunaan lahan pada tahun 2015,
+        2020, dan 2025. Pengguna dapat mengaktifkan layer peta,
+        melihat informasi atribut, membandingkan periode, serta
+        mengamati ringkasan data melalui tabel dan grafik.
+    </p>
+</section>
+
+<section id="peta">
+    <h2 class="section-title">Peta Interaktif</h2>
+    <p class="section-description">
+        Pilih layer yang ingin ditampilkan. Data akan dimuat ketika
+        layer diaktifkan agar proses awal membuka peta lebih ringan.
+    </p>
+
+    <div class="map-layout">
+
+        <aside class="sidebar">
+            <h3>Pengaturan Layer</h3>
+<div class="search-desa">
+    <h4>Cari Desa</h4>
+
+    <input
+        type="text"
+        id="inputCariDesa"
+        list="daftarDesa"
+        placeholder="Masukkan nama desa..."
+    >
+
+    <datalist id="daftarDesa"></datalist>
+
+    <button id="tombolCariDesa">
+        <span>⌕</span> Cari Desa
+    </button>
+
+    <p id="hasilCariDesa"></p>
+</div>
+            <div class="layer-group">
+                <h4>Jaringan Jalan</h4>
+                <label class="layer-option"><input type="checkbox" id="jalan2015"> Jaringan Jalan 2015</label>
+                <label class="layer-option"><input type="checkbox" id="jalan2020"> Jaringan Jalan 2020</label>
+                <label class="layer-option"><input type="checkbox" id="jalan2025" checked> Jaringan Jalan 2025</label>
+            </div>
+
+            <div class="layer-group">
+                <h4>Kepadatan Penduduk</h4>
+                <label class="layer-option"><input type="checkbox" id="penduduk2015"> Kepadatan Penduduk 2015</label>
+                <label class="layer-option"><input type="checkbox" id="penduduk2020"> Kepadatan Penduduk 2020</label>
+                <label class="layer-option"><input type="checkbox" id="penduduk2025" checked> Kepadatan Penduduk 2025</label>
+            </div>
+
+            <div class="layer-group">
+                <h4>Penggunaan Lahan</h4>
+                <label class="layer-option"><input type="checkbox" id="lahan2015"> Penggunaan Lahan 2015</label>
+                <label class="layer-option"><input type="checkbox" id="lahan2020"> Penggunaan Lahan 2020</label>
+                <label class="layer-option"><input type="checkbox" id="lahan2025"> Penggunaan Lahan 2025</label>
+            </div>
+
+            <button id="toggleCompare" style="width:100%">
+                Bandingkan Tiga Tahun
+            </button>
+        </aside>
+
+        <div class="map-wrapper">
+<div class="map-toolbar">
+    <span id="status">Menyiapkan peta...</span>
+
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button id="guideButton" class="guide-button">
+            ☰ Panduan Penggunaan
+        </button>
+
+        <button id="homeButton">
+            Tampilan Awal
+        </button>
+    </div>
+</div>
+            <div id="map"></div>
+        </div>
+
+    </div>
+<!-- =================================
+     JENDELA PANDUAN WEBGIS
+================================= -->
+
+<div id="guideOverlay" class="guide-overlay">
+
+    <div class="guide-modal">
+
+        <div class="guide-header">
+            <h3>📖 Panduan Penggunaan WebGIS</h3>
+
+            <button id="closeGuide" class="guide-close">
+                ×
+            </button>
+        </div>
+
+        <div class="guide-content">
+
+            <p class="guide-intro">
+                WebGIS Dinamika Spasial Urban Kecamatan Karang Intan
+                merupakan peta interaktif untuk menyajikan dan
+                membandingkan informasi jaringan jalan, kepadatan
+                penduduk, serta penggunaan lahan tahun 2015, 2020,
+                dan 2025. Berikut panduan penggunaan fitur yang tersedia.
+            </p>
+
+            <div class="guide-item">
+                <div class="guide-number">1</div>
+                <div>
+                    <h4>Pengaturan Layer Peta</h4>
+                    <p>
+                        Gunakan kotak centang pada panel Pengaturan Layer
+                        untuk mengaktifkan atau menonaktifkan jaringan jalan,
+                        kepadatan penduduk, dan penggunaan lahan berdasarkan
+                        tahun 2015, 2020, dan 2025.
+                    </p>
+                </div>
+            </div>
+
+            <div class="guide-item">
+                <div class="guide-number">2</div>
+                <div>
+                    <h4>Pencarian Desa</h4>
+                    <p>
+                        Masukkan nama desa pada kolom Cari Desa.
+                        Klik tombol Cari Desa atau tekan Enter.
+                        Peta akan diarahkan menuju lokasi desa yang ditemukan.
+                    </p>
+                </div>
+            </div>
+
+            <div class="guide-item">
+                <div class="guide-number">3</div>
+                <div>
+                    <h4>Informasi Objek Peta</h4>
+                    <p>
+                        Klik objek pada peta untuk melihat informasi
+                        atributnya. Pada layer kepadatan penduduk,
+                        arahkan kursor ke objek untuk melihat informasi
+                        tambahan yang tersedia.
+                    </p>
+                </div>
+            </div>
+
+            <div class="guide-item">
+                <div class="guide-number">4</div>
+                <div>
+                    <h4>Batas Administrasi Desa</h4>
+                    <p>
+                        Batas administrasi desa ditampilkan sebagai
+                        referensi wilayah. Klik batas desa untuk melihat
+                        informasi nama desa dan wilayah administrasinya.
+                    </p>
+                </div>
+            </div>
+
+            <div class="guide-item">
+                <div class="guide-number">5</div>
+                <div>
+                    <h4>Perbandingan Spasial Antar Tahun</h4>
+                    <p>
+                        Klik tombol Bandingkan Tiga Tahun untuk membuka
+                        tiga peta sekaligus, yaitu tahun 2015, 2020,
+                        dan 2025. Aktifkan variabel yang ingin dibandingkan
+                        melalui checkbox di bagian atas peta.
+                    </p>
+                </div>
+            </div>
+
+            <div class="guide-item">
+                <div class="guide-number">6</div>
+                <div>
+                    <h4>Legenda Peta</h4>
+                    <p>
+                        Legenda menjelaskan warna dan kategori pada
+                        setiap layer. Pada tampilan perbandingan,
+                        satu jendela legenda digunakan bersama untuk
+                        ketiga peta dan menyesuaikan variabel yang aktif.
+                    </p>
+                </div>
+            </div>
+
+            <div class="guide-item">
+                <div class="guide-number">7</div>
+                <div>
+                    <h4>Sinkronisasi Peta</h4>
+                    <p>
+                        Ketiga peta perbandingan memiliki pergerakan
+                        dan tingkat zoom yang tersinkronisasi.
+                        Perubahan posisi atau zoom pada satu peta
+                        akan diterapkan pada dua peta lainnya.
+                    </p>
+                </div>
+            </div>
+
+            <div class="guide-item">
+                <div class="guide-number">8</div>
+                <div>
+                    <h4>Tampilan Awal</h4>
+                    <p>
+                        Klik tombol Tampilan Awal untuk mengembalikan
+                        peta utama ke posisi dan tingkat zoom awal.
+                    </p>
+                </div>
+            </div>
+
+            <div class="guide-item">
+                <div class="guide-number">9</div>
+                <div>
+                    <h4>Analisis Spasial</h4>
+                    <p>
+                        Buka bagian Analisis Spasial, kemudian klik
+                        Muat Tabel dan Grafik Analisis. WebGIS akan
+                        menghitung panjang jaringan jalan, rata-rata
+                        kepadatan penduduk, nilai tertinggi dan terendah,
+                        serta luas penggunaan lahan pada ketiga tahun.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="guide-footer">
+            WebGIS Dinamika Spasial Urban |
+            Kecamatan Karang Intan, Kabupaten Banjar
+        </div>
+
+    </div>
+
+</div>
+   
+<div id="comparisonPanel" class="comparison-section">
+
+    <div class="comparison-header">
+        <h3>Perbandingan Spasial Antar Tahun</h3>
+        <button id="closeCompare">Tutup Perbandingan</button>
+    </div>
+
+    <p class="section-description">
+        Pilih variabel yang ingin dibandingkan. Setiap pilihan akan
+        ditampilkan secara bersamaan pada peta tahun 2015, 2020, dan 2025.
+        Batas administrasi desa ditampilkan secara otomatis.
+    </p>
+
+    <!-- PILIHAN VARIABEL UNTUK KETIGA TAHUN -->
+    <div class="comparison-options" id="comparisonVariableOptions">
+        <label>
+            <input type="checkbox" id="cmpJalanGlobal">
+            Jaringan Jalan
+        </label>
+
+        <label>
+            <input type="checkbox" id="cmpPendudukGlobal">
+            Kepadatan Penduduk
+        </label>
+
+        <label>
+            <input type="checkbox" id="cmpLahanGlobal">
+            Penggunaan Lahan
+        </label>
+        
+    </div>
+<div id="comparisonLegend" class="comparison-legend"></div>
+
+<div class="comparison-grid">
+
+        <div class="comparison-card">
+            <h4>Tahun 2015</h4>
+            <div id="compareMap2015" class="compare-map"></div>
+        </div>
+
+        <div class="comparison-card">
+            <h4>Tahun 2020</h4>
+            <div id="compareMap2020" class="compare-map"></div>
+        </div>
+
+        <div class="comparison-card">
+            <h4>Tahun 2025</h4>
+            <div id="compareMap2025" class="compare-map"></div>
+        </div>
+
+    </div>
+</div>
+
+</section>
+
+<section id="analisis" style="margin-top:35px">
+    <h2 class="section-title">Analisis Spasial</h2>
+    <p class="section-description">
+        Ringkasan statistik jaringan jalan, kepadatan penduduk,
+        dan luas penggunaan lahan pada tahun 2015, 2020, dan 2025.
+    </p>
+
+    <div class="statistik-box">
+        <h3>Statistik Panjang Jaringan Jalan</h3>
+        <div class="table-scroll">
+            <table class="statistik-table">
+                <thead>
+                    <tr>
+                        <th>Indikator</th>
+                        <th>2015</th>
+                        <th>2020</th>
+                        <th>2025</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Total Panjang Jalan (km)</td>
+                        <td id="jalan2015Stat">-</td>
+                        <td id="jalan2020Stat">-</td>
+                        <td id="jalan2025Stat">-</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="keterangan-statistik">
+            Panjang jalan dihitung dari geometri garis menggunakan
+            jarak horizontal antar koordinat. Koordinat Z tidak
+            dimasukkan dalam perhitungan.
+        </p>
+    </div>
+
+    <div class="grafik-grid">
+
+        <div class="grafik-card">
+            <h3>Rata-rata Kepadatan Penduduk</h3>
+            <p>Perbandingan rata-rata kepadatan penduduk setiap tahun.</p>
+            <div class="grafik-area">
+                <canvas id="grafikKepadatan"></canvas>
+            </div>
+        </div>
+
+        <div class="grafik-card">
+            <h3>Kepadatan Penduduk Tertinggi dan Terendah</h3>
+            <p>Perbandingan nilai tertinggi dan terendah setiap tahun.</p>
+            <div class="grafik-area">
+                <canvas id="grafikDesa"></canvas>
+            </div>
+        </div>
+
+        <div class="grafik-card">
+            <h3>Luas Penggunaan Lahan Berdasarkan Kategori</h3>
+            <p>
+                Perbandingan luas setiap kategori penggunaan lahan
+                pada tahun 2015, 2020, dan 2025.
+            </p>
+            <div class="grafik-area">
+                <canvas id="grafikLahan"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <div style="margin-top:20px">
+        <button id="tombolAnalisis">Muat Tabel dan Grafik Analisis</button>
+        <p id="statusAnalisis">
+            Klik tombol untuk menghitung statistik dari seluruh data.
+            Proses dapat memerlukan waktu karena ukuran GeoJSON penggunaan lahan cukup besar.
+        </p>
+    </div>
+</section>
+
+</div>
+
+<footer>
+    WebGIS Dinamika Spasial Urban |
+    Kecamatan Karang Intan, Kabupaten Banjar
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+// ==================================================
+// 1. PENGATURAN DASAR
+// ==================================================
+
+const tahun = [2015, 2020, 2025];
+const pusatPeta = [-3.43, 114.95];
+const zoomAwal = 12;
+
+const status = document.getElementById("status");
+const statusAnalisis = document.getElementById("statusAnalisis");
+
+const warnaJalan = {
+    2015: "#e67e22",
+    2020: "#2980b9",
+    2025: "#c0392b"
+};
+
+const warnaKepadatan = [
+    "#fff7bc", "#fee391", "#fec44f",
+    "#fe9929", "#d95f0e", "#662506"
+];
+
+const kelasKepadatan = [
+    "< 100 jiwa/km²",
+    "100 – < 200 jiwa/km²",
+    "200 – < 300 jiwa/km²",
+    "300 – < 400 jiwa/km²",
+    "400 – < 500 jiwa/km²",
+    "≥ 500 jiwa/km²"
+];
+
+const kategoriLahan = [
+    "Hutan",
+    "Perkebunan",
+    "Permukiman",
+    "Persawahan",
+    "Semak Belukar",
+    "Lahan Terbuka",
+    "Area Pertambangan",
+    "Badan Air"
+];
+
+const warnaLahan = {
+    "Hutan": "#176b3a",
+    "Perkebunan": "#8ab34a",
+    "Permukiman": "#d94f45",
+    "Persawahan": "#f1d34f",
+    "Semak Belukar": "#b2a16b",
+    "Lahan Terbuka": "#d99554",
+    "Area Pertambangan": "#8d6e63",
+    "Badan Air": "#399bd6"
+};
+
+// ==================================================
+// 2. PATH DATA
+// ==================================================
+
+function alamatData(jenis, t) {
+
+    if (jenis === "batasDesa") {
+        return "Data/Batas%20Desa/Batas_Desa.geojson";
+    }
+
+    if (jenis === "jalan") {
+        return `Data/Jalan/Jalan${t}.geojson`;
+    }
+
+    if (jenis === "penduduk") {
+        return `Data/Kepadatan%20Penduduk/Kepadatan${t}.geojson`;
+    }
+
+    if (jenis === "lahan") {
+        return `Data/Penggunaan%20Lahan/penggunaan%20lahan%20${t}.geojson`;
+    }
+}
+
+// ==================================================
+// 3. CACHE DATA DAN LAYER
+// ==================================================
+
+const cacheData = {
+    jalan: {},
+    penduduk: {},
+    lahan: {}
+};
+
+const cacheLayer = {
+    jalan: {},
+    penduduk: {},
+    lahan: {}
+};
+// Cache layer terpisah untuk setiap peta perbandingan
+
+const cacheLayerPerbandingan = {
+
+    2015: {
+        jalan: null,
+        penduduk: null,
+        lahan: null,
+        batasDesa: null
+    },
+
+    2020: {
+        jalan: null,
+        penduduk: null,
+        lahan: null,
+        batasDesa: null
+    },
+
+    2025: {
+        jalan: null,
+        penduduk: null,
+        lahan: null,
+        batasDesa: null
+    }
+
+};
+
+async function ambilData(jenis, t) {
+
+    if (cacheData[jenis][t]) {
+        return cacheData[jenis][t];
+    }
+
+    const response = await fetch(alamatData(jenis, t));
+
+    if (!response.ok) {
+        throw new Error(`Gagal mengambil ${jenis} tahun ${t}`);
+    }
+
+    const data = await response.json();
+
+    cacheData[jenis][t] = data;
+
+    return data;
+}
+
+// ==================================================
+// 4. MEMBUAT PETA
+// ==================================================
+
+const map = L.map("map", {
+    preferCanvas: true
+}).setView(pusatPeta, zoomAwal);
+
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "&copy; OpenStreetMap contributors",
+    maxZoom: 19
+}).addTo(map);
+
+map.createPane("lahanPane");
+map.getPane("lahanPane").style.zIndex = 350;
+
+map.createPane("pendudukPane");
+map.getPane("pendudukPane").style.zIndex = 400;
+
+map.createPane("jalanPane");
+map.getPane("jalanPane").style.zIndex = 450;
+
+map.createPane("batasDesaPane");
+map.getPane("batasDesaPane").style.zIndex = 500;
+
+L.control.scale({
+    position: "bottomleft",
+    metric: true,
+    imperial: false
+}).addTo(map);
+
+// ==================================================
+// 5. KOORDINAT KURSOR
+// ==================================================
+
+const koordinatControl = L.control({ position: "bottomright" });
+
+koordinatControl.onAdd = function() {
+    this.div = L.DomUtil.create("div", "coordinate-info");
+    this.div.innerHTML = "Lat: -, Long: -";
+    return this.div;
+};
+
+koordinatControl.addTo(map);
+
+map.on("mousemove", function(e) {
+    koordinatControl.div.innerHTML =
+        "Lat: " + e.latlng.lat.toFixed(5) +
+        " | Long: " + e.latlng.lng.toFixed(5);
+});
+
+document.getElementById("homeButton").onclick = function() {
+    map.setView(pusatPeta, zoomAwal);
+};
+// ======================================
+// TOMBOL PANDUAN PENGGUNAAN
+// ======================================
+
+const guideOverlay = document.getElementById("guideOverlay");
+
+document.getElementById("guideButton").onclick = function() {
+    guideOverlay.style.display = "flex";
+};
+
+document.getElementById("closeGuide").onclick = function() {
+    guideOverlay.style.display = "none";
+};
+
+// Tutup ketika area luar jendela diklik
+guideOverlay.addEventListener("click", function(e) {
+    if (e.target === guideOverlay) {
+        guideOverlay.style.display = "none";
+    }
+});
+
+// Tutup menggunakan tombol Escape
+document.addEventListener("keydown", function(e) {
+    if (e.key === "Escape") {
+        guideOverlay.style.display = "none";
+    }
+});
+
+// ==================================================
+// 6. FUNGSI FORMAT DAN POPUP
+// ==================================================
+
+function formatAngka(nilai, desimal = 2) {
+    return Number(nilai).toLocaleString("id-ID", {
+        minimumFractionDigits: desimal,
+        maximumFractionDigits: desimal
+    });
+}
+
+function amanHTML(teks) {
+    return String(teks ?? "-").replace(/[&<>"']/g, function(karakter) {
+        return {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#039;"
+        }[karakter];
+    });
+}
+
+function popupPenduduk(feature) {
+
+    const p = feature.properties || {};
+    const desa = amanHTML(p.WADMKD);
+    const nilai = Number(p.kepadatan);
+
+    return `
+        <b>${desa}</b>
+        <hr>
+        Kepadatan penduduk:
+        <b>${Number.isFinite(nilai)
+            ? formatAngka(nilai) + " Jiwa/Km²"
+            : "Tidak tersedia"}</b>
+    `;
+}
+
+function popupLahan(feature) {
+
+    const p = feature.properties || {};
+    const kelas = amanHTML(p.Kelas);
+    const luas = Number(p.Luas_ha);
+
+    return `
+        <b>Informasi Penggunaan Lahan</b>
+        <hr>
+        Kategori: <b>${kelas}</b><br>
+        Luas: <b>${Number.isFinite(luas)
+            ? formatAngka(luas) + " ha"
+            : "Tidak tersedia"}</b>
+    `;
+}
+// ======================================
+// INFORMASI PETA SAAT KURSOR DIARAHKAN
+// ======================================
+
+function tampilkanInfoHover(feature, layer) {
+
+    const properties = feature.properties || {};
+
+    let isiTooltip = "";
+
+    // Nama desa jika tersedia
+    if (properties.WADMKD) {
+        isiTooltip += `
+            <b>Desa:</b> ${amanHTML(properties.WADMKD)}<br>
+        `;
+    }
+
+    // Tampilkan seluruh atribut objek
+    Object.entries(properties).forEach(([key, value]) => {
+
+        if (
+            value !== null &&
+            value !== undefined &&
+            value !== "" &&
+            key !== "WADMKD"
+        ) {
+
+            isiTooltip += `
+                <b>${amanHTML(key)}:</b>
+                ${amanHTML(String(value))}<br>
+            `;
+
+        }
+
+    });
+
+    if (!isiTooltip) {
+        isiTooltip = "Tidak ada informasi atribut.";
+    }
+
+    layer.bindTooltip(isiTooltip, {
+        sticky: true,
+        direction: "top",
+        opacity: 0.95,
+        className: "info-hover"
+    });
+}
+// ==================================================
+// 7. STYLE JARINGAN JALAN
+// ==================================================
+
+function styleJalan(t) {
+    return {
+        pane: "jalanPane",
+        color: warnaJalan[t],
+        weight: 2.5,
+        opacity: 0.9
+    };
+}
+
+// ==================================================
+// 8. STYLE KEPADATAN PENDUDUK
+// ==================================================
+
+function indeksKepadatan(nilai) {
+    if (nilai < 100) return 0;
+    if (nilai < 200) return 1;
+    if (nilai < 300) return 2;
+    if (nilai < 400) return 3;
+    if (nilai < 500) return 4;
+    return 5;
+}
+
+function stylePenduduk(feature) {
+
+    const nilai = Number(feature.properties?.kepadatan);
+    const indeks = Number.isFinite(nilai)
+        ? indeksKepadatan(nilai)
+        : 0;
+
+    return {
+        pane: "pendudukPane",
+        fillColor: warnaKepadatan[indeks],
+        color: "#555555",
+        weight: 0.5,
+        fillOpacity: 0.8
+    };
+}
+
+// ==================================================
+// 9. STYLE PENGGUNAAN LAHAN
+// ==================================================
+
+function styleLahan(feature) {
+
+    const kelas = feature.properties?.Kelas;
+    const warna = warnaLahan[kelas] || "#999999";
+
+    return {
+        pane: "lahanPane",
+        fillColor: warna,
+        color: "#555555",
+        weight: 0.25,
+        fillOpacity: 0.8
+    };
+}
+
+// ==================================================
+// 10. MEMBUAT LAYER SECARA BERTAHAP
+// ==================================================
+
+async function ambilLayer(jenis, t) {
+
+    if (cacheLayer[jenis][t]) {
+        return cacheLayer[jenis][t];
+    }
+
+    status.textContent = `Memuat ${jenis} ${t}...`;
+
+    const data = await ambilData(jenis, t);
+
+    let layer;
+
+    if (jenis === "jalan") {
+
+        layer = L.geoJSON(data, {
+            pane: "jalanPane",
+            style: styleJalan(t)
+        });
+
+    } else if (jenis === "penduduk") {
+
+        layer = L.geoJSON(data, {
+            style: stylePenduduk,
+            onEachFeature: function(feature, layerFeature) {
+                layerFeature.bindPopup(popupPenduduk(feature));
+            }
+        });
+
+    } else if (jenis === "lahan") {
+
+        layer = L.geoJSON(data, {
+            style: styleLahan,
+            onEachFeature: function(feature, layerFeature) {
+                layerFeature.bindPopup(popupLahan(feature));
+            }
+        });
+
+    }
+
+
+    cacheLayer[jenis][t] = layer;
+
+    return layer;
+}
+
+
+// ==================================================
+// LAYER BATAS ADMINISTRASI DESA
+// ==================================================
+
+let layerBatasDesa = null;
+
+async function muatBatasDesa() {
+
+    try {
+
+        const url = alamatData("batasDesa");
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error("File batas desa tidak ditemukan");
+        }
+
+        const data = await response.json();
+
+        layerBatasDesa = L.geoJSON(data, {
+
+            pane: "batasDesaPane",
+
+            style: {
+                color: "#202020",
+                weight: 1.5,
+                opacity: 0.9,
+                fillColor: "#ffffff",
+                fillOpacity: 0.02
+            },
+
+            onEachFeature: function(feature, layerFeature) {
+
+                const namaDesa =
+                    feature.properties.WADMKD || "Tidak diketahui";
+
+                layerFeature.bindPopup(`
+                    <b>BATAS ADMINISTRASI DESA</b><br>
+                    Desa: ${namaDesa}<br>
+                    Kecamatan: Karang Intan<br>
+                    Kabupaten: Banjar
+                `);
+
+                layerFeature.bindTooltip(namaDesa, {
+                    sticky: true,
+                    direction: "top"
+                });
+            }
+        });
+
+        layerBatasDesa.addTo(map);
+
+        L.control.layers(
+            null,
+            {
+                "Batas Administrasi Desa": layerBatasDesa
+            },
+            {
+                collapsed: false,
+                position: "topright"
+            }
+        ).addTo(map);
+
+        console.log("Batas desa berhasil dimuat");
+
+    } catch (error) {
+
+        console.error("Gagal memuat batas desa:", error);
+        status.textContent = "Gagal memuat batas desa";
+
+    }
+}
+
+muatBatasDesa();
+
+// ==================================================
+// TOMBOL ZOOM KE SELURUH BATAS WILAYAH
+// ==================================================
+
+const zoomWilayahControl = L.control({ position: "topleft" });
+
+zoomWilayahControl.onAdd = function() {
+    const container = L.DomUtil.create(
+        "div",
+        "zoom-wilayah-control leaflet-bar"
+    );
+
+    const tombol = L.DomUtil.create("button", "", container);
+    tombol.type = "button";
+    tombol.title = "Zoom ke seluruh batas administrasi desa";
+    tombol.setAttribute("aria-label", "Zoom ke seluruh batas administrasi desa");
+    tombol.innerHTML = `
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+        </svg>
+    `;
+
+    L.DomEvent.disableClickPropagation(container);
+    L.DomEvent.on(tombol, "click", function() {
+        if (layerBatasDesa && layerBatasDesa.getBounds().isValid()) {
+            map.fitBounds(layerBatasDesa.getBounds(), {
+                padding: [25, 25],
+                maxZoom: 14,
+                animate: true
+            });
+        } else {
+            map.setView(pusatPeta, zoomAwal, { animate: true });
+            status.textContent = "Batas wilayah belum selesai dimuat.";
+        }
+    });
+
+    return container;
+};
+
+zoomWilayahControl.addTo(map);
+
+
+// ==================================================
+// 11. LEGENDA DINAMIS
+// ==================================================
+
+function buatLegenda(peta, statusLayer) {
+
+    const kontrol = L.control({ position: "bottomleft" });
+
+    kontrol.onAdd = function() {
+        this.div = L.DomUtil.create("div", "legend");
+        this.render();
+        return this.div;
+    };
+
+    kontrol.render = function() {
+
+        let html = "";
+
+        const aktifJalan = tahun.filter(t => statusLayer.jalan(t));
+        const aktifPenduduk = tahun.filter(t => statusLayer.penduduk(t));
+        const aktifLahan = tahun.filter(t => statusLayer.lahan(t));
+
+        if (aktifJalan.length) {
+            html += `<div class="legend-title">Jaringan Jalan</div>`;
+
+            aktifJalan.forEach(t => {
+                html += `
+                    <div class="legend-row">
+                        <span class="legend-color" style="background:${warnaJalan[t]}"></span>
+                        Jalan ${t}
+                    </div>`;
+            });
+        }
+
+        if (aktifPenduduk.length) {
+            html += `<hr><div class="legend-title">Kepadatan Penduduk</div>`;
+
+            kelasKepadatan.forEach((label, i) => {
+                html += `
+                    <div class="legend-row">
+                        <span class="legend-color" style="background:${warnaKepadatan[i]}"></span>
+                        ${label}
+                    </div>`;
+            });
+        }
+
+        if (aktifLahan.length) {
+            html += `<hr><div class="legend-title">Penggunaan Lahan</div>`;
+
+            kategoriLahan.forEach(kelas => {
+                html += `
+                    <div class="legend-row">
+                        <span class="legend-color" style="background:${warnaLahan[kelas]}"></span>
+                        ${kelas}
+                    </div>`;
+            });
+        }
+
+        this.div.innerHTML = html || "Tidak ada layer aktif";
+    };
+
+    kontrol.addTo(peta);
+
+    return kontrol;
+}
+
+// ==================================================
+// 12. LEGENDA PETA UTAMA
+// ==================================================
+
+const statusLayerUtama = {
+    jalan: t => document.getElementById(`jalan${t}`).checked,
+    penduduk: t => document.getElementById(`penduduk${t}`).checked,
+    lahan: t => document.getElementById(`lahan${t}`).checked
+};
+
+const legendUtama = buatLegenda(map, statusLayerUtama);
+
+// ==================================================
+// 13. MENGAKTIFKAN DAN MENONAKTIFKAN LAYER UTAMA
+// ==================================================
+
+async function ubahLayerUtama(jenis, t, aktif) {
+
+    const checkbox = document.getElementById(
+        `${jenis === "lahan" ? "lahan" : jenis}${t}`
+    );
+
+    if (aktif) {
+
+        try {
+            const layer = await ambilLayer(jenis, t);
+
+            // Pastikan checkbox masih aktif setelah proses pemuatan.
+            if (checkbox.checked) {
+                layer.addTo(map);
+            }
+
+            status.textContent = "Layer berhasil dimuat.";
+
+        } catch(error) {
+            console.error(error);
+            checkbox.checked = false;
+            status.textContent = "Gagal memuat layer. Periksa file GeoJSON.";
+            alert(error.message);
+        }
+
+    } else {
+
+        if (cacheLayer[jenis][t]) {
+            map.removeLayer(cacheLayer[jenis][t]);
+        }
+
+    }
+
+    legendUtama.render();
+}
+
+tahun.forEach(t => {
+
+    ["jalan", "penduduk", "lahan"].forEach(jenis => {
+
+        const checkbox = document.getElementById(`${jenis}${t}`);
+
+        checkbox.addEventListener("change", function() {
+            ubahLayerUtama(jenis, t, this.checked);
+        });
+
+    });
+
+});
+
+// Aktifkan dua layer awal.
+ubahLayerUtama("jalan", 2025, true);
+ubahLayerUtama("penduduk", 2025, true);
+// ==================================================
+// PENCARIAN DESA
+// ==================================================
+
+let batasDesaPencarian = null;
+
+// Mengambil daftar desa dari GeoJSON kepadatan 2025
+async function siapkanPencarianDesa() {
+
+    try {
+
+        const data = await ambilData("penduduk", 2025);
+
+        const daftar = document.getElementById("daftarDesa");
+
+        const namaDesa = [
+            ...new Set(
+                data.features
+                    .map(f => f.properties?.WADMKD)
+                    .filter(nama => nama)
+            )
+        ].sort((a, b) => a.localeCompare(b, "id"));
+
+        daftar.innerHTML = "";
+
+        namaDesa.forEach(nama => {
+
+            const opsi = document.createElement("option");
+            opsi.value = nama;
+
+            daftar.appendChild(opsi);
+
+        });
+
+        document.getElementById("hasilCariDesa").textContent =
+            `${namaDesa.length} desa tersedia untuk dicari.`;
+
+    } catch (error) {
+
+        console.error(error);
+
+        document.getElementById("hasilCariDesa").textContent =
+            "Daftar desa gagal dimuat.";
+
+    }
+
+}
+
+
+// Fungsi mencari desa
+async function cariDesa() {
+
+    const input = document.getElementById("inputCariDesa");
+    const hasil = document.getElementById("hasilCariDesa");
+
+    const kataKunci = input.value.trim().toLowerCase();
+
+    if (!kataKunci) {
+        hasil.textContent = "Masukkan nama desa terlebih dahulu.";
+        return;
+    }
+
+    hasil.textContent = "Sedang mencari desa...";
+
+    try {
+
+        const data = await ambilData("penduduk", 2025);
+
+        const fitur = data.features.filter(feature => {
+
+            const nama = String(
+                feature.properties?.WADMKD || ""
+            ).toLowerCase();
+
+            return nama === kataKunci;
+
+        });
+
+        if (fitur.length === 0) {
+
+            hasil.textContent =
+                "Desa tidak ditemukan. Periksa kembali nama desa.";
+
+            return;
+
+        }
+
+        // Hapus tanda pencarian sebelumnya
+        if (batasDesaPencarian) {
+            map.removeLayer(batasDesaPencarian);
+        }
+
+        // Tampilkan batas desa yang ditemukan
+        batasDesaPencarian = L.geoJSON(fitur, {
+
+            style: {
+                color: "#ffffff",
+                weight: 3,
+                fillColor: "#ff3333",
+                fillOpacity: 0.35
+            },
+
+            onEachFeature: function(feature, layer) {
+
+                const nama = amanHTML(feature.properties?.WADMKD);
+
+                layer.bindPopup(
+                    `<b>Lokasi Desa</b><br>${nama}`
+                );
+
+            }
+
+        }).addTo(map);
+
+        // Arahkan peta ke lokasi desa
+        const batas = batasDesaPencarian.getBounds();
+
+        if (batas.isValid()) {
+
+            map.fitBounds(batas, {
+                padding: [35, 35],
+                maxZoom: 15
+            });
+
+        }
+
+        hasil.textContent =
+            `Desa ditemukan: ${fitur[0].properties.WADMKD}`;
+
+        batasDesaPencarian.eachLayer(layer => {
+            layer.openPopup();
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        hasil.textContent =
+            "Pencarian gagal. Periksa data GeoJSON.";
+
+    }
+
+}
+
+
+// Tombol pencarian
+document.getElementById("tombolCariDesa")
+    .addEventListener("click", cariDesa);
+
+
+// Pencarian menggunakan tombol Enter
+document.getElementById("inputCariDesa")
+    .addEventListener("keydown", function(e) {
+
+        if (e.key === "Enter") {
+            cariDesa();
+        }
+
+    });
+
+
+// Siapkan daftar desa
+siapkanPencarianDesa();
+// ==================================================
+// 14. PERHITUNGAN PANJANG JALAN
+// ==================================================
+
+function jarakKoordinat(a, b) {
+
+    const R = 6371;
+
+    const lat1 = a[1] * Math.PI / 180;
+    const lat2 = b[1] * Math.PI / 180;
+
+    const dLat = (b[1] - a[1]) * Math.PI / 180;
+    const dLon = (b[0] - a[0]) * Math.PI / 180;
+
+    const h =
+        Math.sin(dLat / 2) ** 2 +
+        Math.cos(lat1) * Math.cos(lat2) *
+        Math.sin(dLon / 2) ** 2;
+
+    return 2 * R * Math.atan2(
+        Math.sqrt(h),
+        Math.sqrt(1 - h)
+    );
+}
+
+function panjangGaris(koordinat) {
+
+    let total = 0;
+
+    for (let i = 1; i < koordinat.length; i++) {
+        total += jarakKoordinat(koordinat[i - 1], koordinat[i]);
+    }
+
+    return total;
+}
+
+function panjangGeometri(geometry) {
+
+    if (!geometry) return 0;
+
+    if (geometry.type === "LineString") {
+        return panjangGaris(geometry.coordinates);
+    }
+
+    if (geometry.type === "MultiLineString") {
+        return geometry.coordinates.reduce(
+            (total, garis) => total + panjangGaris(garis), 0
+        );
+    }
+
+    if (geometry.type === "GeometryCollection") {
+        return geometry.geometries.reduce(
+            (total, geom) => total + panjangGeometri(geom), 0
+        );
+    }
+
+    return 0;
+}
+
+function hitungPanjangJalan(data) {
+
+    return data.features.reduce(
+        (total, feature) =>
+            total + panjangGeometri(feature.geometry),
+        0
+    );
+}
+
+// ==================================================
+// 15. STATISTIK KEPADATAN PENDUDUK
+// ==================================================
+
+function hitungKepadatan(data) {
+
+    const daftar = data.features.map(feature => {
+
+        const p = feature.properties || {};
+
+        return {
+            desa: p.WADMKD || "Tidak diketahui",
+            nilai: Number(p.kepadatan)
+        };
+
+    }).filter(item => Number.isFinite(item.nilai));
+
+    if (!daftar.length) return null;
+
+    const total = daftar.reduce((sum, item) => sum + item.nilai, 0);
+
+    const tertinggi = daftar.reduce(
+        (a, b) => a.nilai > b.nilai ? a : b
+    );
+
+    const terendah = daftar.reduce(
+        (a, b) => a.nilai < b.nilai ? a : b
+    );
+
+    return {
+        rata: total / daftar.length,
+        tertinggi,
+        terendah
+    };
+}
+
+// ==================================================
+// 16. STATISTIK LUAS PENGGUNAAN LAHAN
+// ==================================================
+
+function hitungLuasLahan(data) {
+
+    const hasil = {};
+
+    kategoriLahan.forEach(kelas => {
+        hasil[kelas] = 0;
+    });
+
+    data.features.forEach(feature => {
+
+        const p = feature.properties || {};
+        const kelas = p.Kelas;
+        const luas = Number(p.Luas_ha);
+
+        if (kategoriLahan.includes(kelas) && Number.isFinite(luas)) {
+            hasil[kelas] += luas;
+        }
+
+    });
+
+    return hasil;
+}
+
+// ==================================================
+// 17. MEMUAT ANALISIS DAN GRAFIK
+// ==================================================
+
+let grafikKepadatan = null;
+let grafikDesa = null;
+let grafikLahan = null;
+let analisisSedangDimuat = false;
+
+document.getElementById("tombolAnalisis").onclick = async function() {
+
+    if (analisisSedangDimuat) return;
+
+    analisisSedangDimuat = true;
+
+    const tombol = this;
+    tombol.disabled = true;
+    tombol.textContent = "Sedang menghitung...";
+
+    try {
+
+        const statistikJalan = {};
+        const statistikPenduduk = {};
+        const statistikLahan = {};
+
+        // Muat dan hitung satu tahun pada satu waktu.
+        for (const t of tahun) {
+
+            statusAnalisis.textContent =
+                `Menghitung data tahun ${t}...`;
+
+            const jalan = await ambilData("jalan", t);
+            statistikJalan[t] = hitungPanjangJalan(jalan);
+
+            document.getElementById(`jalan${t}Stat`).textContent =
+                formatAngka(statistikJalan[t]) + " km";
+
+            // Lepaskan referensi lokal setelah perhitungan.
+            const penduduk = await ambilData("penduduk", t);
+            statistikPenduduk[t] = hitungKepadatan(penduduk);
+
+            const lahan = await ambilData("lahan", t);
+            statistikLahan[t] = hitungLuasLahan(lahan);
+
+            // Data penggunaan lahan besar. Lepaskan cache data
+            // jika layer tersebut belum sedang digunakan di peta.
+            const checkboxLahanPerbandingan =
+                document.getElementById("cmpLahanGlobal");
+
+            if (!document.getElementById(`lahan${t}`).checked &&
+                !(checkboxLahanPerbandingan && checkboxLahanPerbandingan.checked)) {
+                delete cacheData.lahan[t];
+            }
+
+        }
+
+        buatGrafikAnalisis(statistikPenduduk, statistikLahan);
+
+        statusAnalisis.textContent =
+            "Perhitungan statistik dan grafik selesai.";
+
+    } catch(error) {
+
+        console.error(error);
+
+        statusAnalisis.textContent =
+            "Analisis gagal. Periksa koneksi dan struktur file GeoJSON.";
+
+        alert(error.message);
+
+    } finally {
+
+        analisisSedangDimuat = false;
+        tombol.disabled = false;
+        tombol.textContent = "Muat Ulang Tabel dan Grafik Analisis";
+
+    }
+
+};
+
+// ==================================================
+// 18. MEMBUAT GRAFIK ANALISIS
+// ==================================================
+
+function buatGrafikAnalisis(statistikPenduduk, statistikLahan) {
+
+    const rata = tahun.map(t =>
+        statistikPenduduk[t]?.rata ?? null
+    );
+
+    const tertinggi = tahun.map(t =>
+        statistikPenduduk[t]?.tertinggi.nilai ?? null
+    );
+
+    const terendah = tahun.map(t =>
+        statistikPenduduk[t]?.terendah.nilai ?? null
+    );
+
+    const desaTertinggi = tahun.map(t =>
+        statistikPenduduk[t]?.tertinggi.desa ?? "-"
+    );
+
+    const desaTerendah = tahun.map(t =>
+        statistikPenduduk[t]?.terendah.desa ?? "-"
+    );
+
+    if (grafikKepadatan) grafikKepadatan.destroy();
+    if (grafikDesa) grafikDesa.destroy();
+    if (grafikLahan) grafikLahan.destroy();
+
+    grafikKepadatan = new Chart(
+        document.getElementById("grafikKepadatan"),
+        {
+            type: "line",
+            data: {
+                labels: tahun.map(String),
+                datasets: [{
+                    label: "Rata-rata kepadatan",
+                    data: rata,
+                    borderColor: "#2980b9",
+                    backgroundColor: "rgba(41,128,185,0.15)",
+                    borderWidth: 3,
+                    pointRadius: 5,
+                    tension: 0.3,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: c => formatAngka(c.parsed.y) + " jiwa/km²"
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: "Kepadatan (jiwa/km²)"
+                        }
+                    },
+                    x: {
+                        title: { display: true, text: "Tahun" }
+                    }
+                }
+            }
+        }
+    );
+
+    grafikDesa = new Chart(
+        document.getElementById("grafikDesa"),
+        {
+            type: "bar",
+            data: {
+                labels: tahun.map(String),
+                datasets: [
+                    {
+                        label: "Tertinggi",
+                        data: tertinggi,
+                        backgroundColor: "#c0392b",
+                        borderRadius: 5
+                    },
+                    {
+                        label: "Terendah",
+                        data: terendah,
+                        backgroundColor: "#2980b9",
+                        borderRadius: 5
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            afterLabel: function(c) {
+                                const nama = c.datasetIndex === 0
+                                    ? desaTertinggi[c.dataIndex]
+                                    : desaTerendah[c.dataIndex];
+
+                                return "Desa: " + nama;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: "Kepadatan (jiwa/km²)"
+                        }
+                    },
+                    x: {
+                        title: { display: true, text: "Tahun" }
+                    }
+                }
+            }
+        }
+    );
+
+    grafikLahan = new Chart(
+        document.getElementById("grafikLahan"),
+        {
+            type: "bar",
+            data: {
+                labels: kategoriLahan,
+                datasets: tahun.map((t, i) => ({
+                    label: String(t),
+                    data: kategoriLahan.map(kelas =>
+                        statistikLahan[t][kelas]
+                    ),
+                    backgroundColor: [
+                        "#173b57", "#2980b9", "#c0392b"
+                    ][i]
+                }))
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: c =>
+                                c.dataset.label + ": " +
+                                formatAngka(c.parsed.y) + " ha"
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: "Luas (hektare)"
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            maxRotation: 35,
+                            minRotation: 20
+                        }
+                    }
+                }
+            }
+        }
+    );
+
+}
+
+
+ // ==================================================
+ // 19. PETA PERBANDINGAN
+ // ==================================================
+
+const comparisonPanel = document.getElementById("comparisonPanel");
+
+const petaPerbandingan = {};
+
+let perbandinganDibuat = false;
+let sinkronisasiAktif = false;
+
+
+// ==================================================
+// MENGAMBIL LAYER VARIABEL PERBANDINGAN
+// ==================================================
+
+
+async function ambilLayerPerbandingan(jenis, t) {
+
+    if (cacheLayerPerbandingan[t][jenis]) {
+        return cacheLayerPerbandingan[t][jenis];
+    }
+
+    const data = await ambilData(jenis, t);
+
+    let layer;
+
+    if (jenis === "jalan") {
+
+        layer = L.geoJSON(data, {
+            pane: "jalanPane",
+            style: function() {
+                return styleJalan(t);
+            }
+        });
+
+    } else if (jenis === "penduduk") {
+
+        layer = L.geoJSON(data, {
+            pane: "pendudukPane",
+            style: stylePenduduk,
+
+            onEachFeature: function(feature, layerFeature) {
+                layerFeature.bindPopup(popupPenduduk(feature));
+                tampilkanInfoHover(feature, layerFeature);
+            }
+        });
+
+    } else if (jenis === "lahan") {
+
+        layer = L.geoJSON(data, {
+            pane: "lahanPane",
+            style: styleLahan,
+
+            onEachFeature: function(feature, layerFeature) {
+                layerFeature.bindPopup(popupLahan(feature));
+            }
+        });
+
+    }
+
+    cacheLayerPerbandingan[t][jenis] = layer;
+
+    return layer;
+}
+
+
+
+// ==================================================
+// MENGAMBIL LAYER BATAS DESA
+// ==================================================
+
+async function ambilBatasDesaPerbandingan(t) {
+
+    if (cacheLayerPerbandingan[t].batasDesa) {
+        return cacheLayerPerbandingan[t].batasDesa;
+    }
+
+    const response = await fetch(
+        alamatData("batasDesa", t)
+    );
+
+    if (!response.ok) {
+        throw new Error("File batas desa tidak ditemukan");
+    }
+
+    const data = await response.json();
+
+    const layer = L.geoJSON(data, {
+
+        pane: "batasDesaPane",
+
+        style: {
+            color: "#202020",
+            weight: 1.5,
+            opacity: 0.95,
+            fill: false
+        },
+
+        onEachFeature: function(feature, layerFeature) {
+
+            const namaDesa =
+                feature.properties.WADMKD || "Tidak diketahui";
+
+            layerFeature.bindPopup(`
+                <div class="popup-desa">
+                    <b>BATAS ADMINISTRASI DESA</b><br>
+                    Desa: ${namaDesa}<br>
+                    Kecamatan: Karang Intan<br>
+                    Kabupaten: Banjar
+                </div>
+            `);
+
+            layerFeature.bindTooltip(namaDesa, {
+                sticky: true,
+                direction: "top"
+            });
+
+        }
+
+    });
+
+    cacheLayerPerbandingan[t].batasDesa = layer;
+
+    return layer;
+}
+
+
+// ==================================================
+// MENGAKTIFKAN / MENONAKTIFKAN LAYER VARIABEL
+// ==================================================
+
+async function ubahLayerPerbandingan(jenis, t, peta, aktif) {
+
+    if (aktif) {
+
+        try {
+
+            const layer = await ambilLayerPerbandingan(jenis, t);
+            const checkboxGlobal = document.getElementById(
+                `cmp${jenisNama(jenis)}Global`
+            );
+
+            // Periksa kembali status checkbox setelah data selesai dimuat.
+            if (checkboxGlobal && checkboxGlobal.checked) {
+                layer.addTo(peta);
+            }
+
+        } catch(error) {
+
+            console.error(error);
+            alert(`Gagal memuat ${jenis} ${t}: ${error.message}`);
+
+        }
+
+    } else {
+
+        const layer = cacheLayerPerbandingan[t][jenis];
+
+        if (layer && peta.hasLayer(layer)) {
+            peta.removeLayer(layer);
+        }
+
+    }
+}
+
+
+
+// ==================================================
+// MENGAKTIFKAN / MENONAKTIFKAN BATAS DESA
+// ==================================================
+
+async function ubahBatasDesaPerbandingan(t, peta, aktif) {
+
+    if (aktif) {
+
+        try {
+            const layer = await ambilBatasDesaPerbandingan(t);
+            layer.addTo(peta);
+        } catch(error) {
+            console.error(error);
+            console.warn(`Batas desa ${t} tidak dapat dimuat: ${error.message}`);
+        }
+
+    } else {
+
+        const layer = cacheLayerPerbandingan[t].batasDesa;
+
+        if (layer && peta.hasLayer(layer)) {
+            peta.removeLayer(layer);
+        }
+
+    }
+}
+
+
+// ==================================================
+// LEGENDA GABUNGAN PETA PERBANDINGAN
+// ==================================================
+
+function renderComparisonLegend() {
+
+    const wadah = document.getElementById("comparisonLegend");
+
+    let html = "";
+
+    // LEGENDA JARINGAN JALAN
+    if (document.getElementById("cmpJalanGlobal").checked) {
+
+        html += `
+            <div class="legend-group">
+                <div class="legend-title">Jaringan Jalan</div>
+
+                ${tahun.map(t => `
+                    <div class="legend-row">
+                        <span class="legend-color"
+                            style="background:${warnaJalan[t]}">
+                        </span>
+                        Jalan ${t}
+                    </div>
+                `).join("")}
+            </div>
+        `;
+    }
+
+    // LEGENDA KEPADATAN PENDUDUK
+    if (document.getElementById("cmpPendudukGlobal").checked) {
+
+        html += `
+            <div class="legend-group">
+                <div class="legend-title">Kepadatan Penduduk</div>
+
+                ${kelasKepadatan.map((label, i) => `
+                    <div class="legend-row">
+                        <span class="legend-color"
+                            style="background:${warnaKepadatan[i]}">
+                        </span>
+                        ${label}
+                    </div>
+                `).join("")}
+            </div>
+        `;
+    }
+
+    // LEGENDA PENGGUNAAN LAHAN
+    if (document.getElementById("cmpLahanGlobal").checked) {
+
+        html += `
+            <div class="legend-group">
+                <div class="legend-title">Penggunaan Lahan</div>
+
+                ${kategoriLahan.map(kelas => `
+                    <div class="legend-row">
+                        <span class="legend-color"
+                            style="background:${warnaLahan[kelas]}">
+                        </span>
+                        ${kelas}
+                    </div>
+                `).join("")}
+            </div>
+        `;
+    }
+
+    wadah.innerHTML = html
+        ? `<div class="legend">${html}</div>`
+        : "";
+}
+// ==================================================
+// NAMA JENIS LAYER
+// ==================================================
+
+function jenisNama(jenis) {
+
+    return {
+        jalan: "Jalan",
+        penduduk: "Penduduk",
+        lahan: "Lahan"
+    }[jenis];
+
+}
+
+
+// ==================================================
+// MEMBUAT PETA PERBANDINGAN
+// ==================================================
+
+function buatPetaPerbandingan() {
+
+    if (perbandinganDibuat) return;
+
+    tahun.forEach(t => {
+
+        const peta = L.map(`compareMap${t}`, {
+            preferCanvas: true
+        }).setView(pusatPeta, zoomAwal);
+
+
+        // PANE PENGGUNAAN LAHAN
+        peta.createPane("lahanPane");
+        peta.getPane("lahanPane").style.zIndex = 350;
+
+
+        // PANE KEPADATAN PENDUDUK
+        peta.createPane("pendudukPane");
+        peta.getPane("pendudukPane").style.zIndex = 400;
+
+
+        // PANE JARINGAN JALAN
+        peta.createPane("jalanPane");
+        peta.getPane("jalanPane").style.zIndex = 450;
+
+
+        // PANE BATAS DESA
+        peta.createPane("batasDesaPane");
+        peta.getPane("batasDesaPane").style.zIndex = 500;
+
+
+        // BASEMAP
+        L.tileLayer(
+            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            {
+                attribution: "&copy; OpenStreetMap contributors",
+                maxZoom: 19
+            }
+        ).addTo(peta);
+
+
+        petaPerbandingan[t] = peta;
+
+        // BATAS DESA LANGSUNG TAMPIL PADA SETIAP PETA
+        ubahBatasDesaPerbandingan(t, peta, true);
+
+    });
+
+    // SATU CHECKBOX MENGATUR LAYER PADA KETIGA TAHUN
+    ["jalan", "penduduk", "lahan"].forEach(jenis => {
+
+        const checkboxGlobal = document.getElementById(
+            `cmp${jenisNama(jenis)}Global`
+        );
+
+checkboxGlobal.addEventListener("change", async function() {
+
+    const aktif = this.checked;
+
+    await Promise.all(tahun.map(t =>
+        ubahLayerPerbandingan(
+            jenis,
+            t,
+            petaPerbandingan[t],
+            aktif
+        )
+    ));
+
+    // Perbarui satu legenda gabungan
+    renderComparisonLegend();
+
+});
+
+    });
+
+aktifkanSinkronisasi();
+
+// Tampilkan kondisi awal legenda
+renderComparisonLegend();
+
+perbandinganDibuat = true;
+
+}
+
+
+// ==================================================
+// 20. SINKRONISASI PETA
+// ==================================================
+
+function aktifkanSinkronisasi() {
+
+    tahun.forEach(t => {
+
+        const peta = petaPerbandingan[t];
+
+        peta.on("moveend", function() {
+
+            if (sinkronisasiAktif) return;
+
+            sinkronisasiAktif = true;
+
+            const pusat = peta.getCenter();
+            const zoom = peta.getZoom();
+
+            tahun.forEach(tujuan => {
+
+                if (tujuan === t) return;
+
+                petaPerbandingan[tujuan].setView(
+                    pusat,
+                    zoom,
+                    {
+                        animate: false
+                    }
+                );
+
+            });
+
+            requestAnimationFrame(() => {
+                sinkronisasiAktif = false;
+            });
+
+        });
+
+    });
+
+}
+
+
+
+// ==================================================
+// 21. TOMBOL PERBANDINGAN
+// ==================================================
+
+document.getElementById("toggleCompare").onclick = function() {
+
+    comparisonPanel.style.display = "block";
+
+    if (!perbandinganDibuat) {
+        buatPetaPerbandingan();
+    }
+
+    setTimeout(() => {
+
+        tahun.forEach(t => {
+            petaPerbandingan[t].invalidateSize();
+        });
+
+    }, 200);
+
+    comparisonPanel.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+
+};
+
+
+document.getElementById("closeCompare").onclick = function() {
+
+    comparisonPanel.style.display = "none";
+
+};
+
+
+</script>
+</body>
+</html>

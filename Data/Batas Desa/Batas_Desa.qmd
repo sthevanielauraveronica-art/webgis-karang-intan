@@ -1,0 +1,61 @@
+<!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
+<qgis version="3.44.10-Solothurn">
+  <identifier>BATAS_DESAKEL_AR</identifier>
+  <parentidentifier></parentidentifier>
+  <language>IND</language>
+  <type>dataset</type>
+  <title>BATAS_DESAKEL_AR</title>
+  <abstract>Basis data batas wilayah administrasi desa/kelurahan Edisi Juni 2026 merupakan hasil pemutakhiran dari basis data batas wilayah administrasi desa/kelurahan edisi Desember 2025. Pemutakhiran yang dilakukan meliputi: 1) pemutakhiran menggunakan sebagian data hasil penegasan batas desa/kelurahan yang telah diverifikasi secara teknis oleh BIG pada tahun 2026; 2) pemutakhiran wilayah yang berbatasan dengan laut menggunakan garis pantai yang ditetapkan melalui Keputusan Kepala Badan Informasi Geospasial Nomor 235 Tahun 2025 tentang Penetapan Unsur Garis Pantai untuk Wilayah Negara Kesatuan Republik Indonesia Edisi Tahun 2025; dan 3) pemutakhiran menggunakan data indikatif dari Pemerintah Kabupaten/Kota yang disampaikan bersamaan dengan data batas desa/kelurahan hasil penegasan.Alokasi pulau pada wilayah administrasi dilakukan dengan mengacu pada: 1) Kepmendagri Nomor 300.2.2-2430 Tahun 2025 tentang Perubahan atas Kepmendagri Nomor 300.2.2-2138 mengenai Pemberian dan Pemutakhiran Kode, Data Wilayah Administrasi Pemerintahan, dan Pulau; serta 2) Berita Acara Kesepakatan Nomor 002/TOPONIMI/VI/2025 tanggal 24 Juni 2025 mengenai Status Wilayah Administrasi 16 (Enam Belas) Pulau antara Kabupaten Trenggalek dan Kabupaten Tulungagung Provinsi Jawa Timur.Sumber data yang digunakan dalam penyusunan basis data batas desa/kelurahan ini terdiri dari: 1) Batas Definitif yang diperoleh dari Pemerintah Daerah dan Kementerian Dalam Negeri; 2) Batas Indikatif yang bersumber dari Hasil Delineasi Batas Desa Tahun 2016, 2017, 2018, dan 2019; Hasil Kegiatan PNBP Tahun 2016, 2017, 2018, 2019, dan 2021; Hasil Kegiatan Perjanjian Kerja Sama (PKS) BIG-Pemda Tahun 2017 dan 2019; Hasil Sinkronisasi Data Pemerintah Daerah Tahun 2019; Sinkronisasi data batas desa/kelurahan; Data MCAI; Hasil Ajudikasi Tahun 2013, 2014, dan 2015; serta Data RBI Skala 1:25.000, Skala 1:10.000, dan Skala 1:5.000; dan 3) Hasil Kesepakatan yang diperoleh dari hasil kegiatan penegasan batas desa/kelurahan yang telah diverifikasi secara teknis oleh BIG, Kesepakatan Teknis Batas Wilayah Administrasi Desa Tahun 2020 dan hasil Kegiatan Kesepakatan Teknis Batas Wilayah Administrasi Desa/Kelurahan Tahun 2021.Beberapa catatan teknis terkait basis data batas wilayah administrasi desa/kelurahan Edisi Juni 2026 adalah sebagai berikut: 1) terdapat beberapa wilayah desa/kelurahan yang belum selaras dengan batas kabupaten/kota; 2) terdapat area tidak terdefinisi, yaitu area yang secara administratif belum dialokasikan ke dalam wilayah desa/kelurahan tertentu, yang dalam basis data batas wilayah administrasi ini berupa pulau-pulau kecil dan danau; 3) terdapat desa/kelurahan yang belum tergambar geometrinya dalam basis data batas wilayah administrasi dikarenakan: (a) merupakan hasil pemekaran dan belum memiliki kode wilayah; dan/atau (b) desa/kelurahan tersebut berlokasi di luar cakupan wilayah administrasi kabupaten/kota induknya; 4) terkait wilayah terapung terdapat dua kondisi, yaitu: (a) wilayah desa terapung yang telah memiliki kode wilayah administrasi dan geometrinya tergambar dalam basis data batas wilayah administrasi; serta (b) wilayah terapung yang belum tergambarkan secara spasial dalam basis data batas wilayah dan belum diketahui alokasi wilayah administrasinya; dan 5) batas desa/kelurahan indikatif masih dimungkinkan memuat area saling klaim.Basis data batas wilayah administrasi desa/kelurahan Edisi Juni 2026 ini masih memuat ketidakselarasan antara batas desa/kelurahan dengan batas daerah (kabupaten/kota) pada beberapa lokasi, antara lain di Provinsi DKI Jakarta; Kota Gunungsitoli dengan Kabupaten Nias di Provinsi Sumatera Utara; Kabupaten Sekadau dengan Kabupaten Sintang di Provinsi Kalimantan Barat; Kabupaten Paser dengan Kabupaten Penajam Paser Utara di Provinsi Kalimantan Timur; Kota Kendari dengan Kabupaten Konawe di Provinsi Sulawesi Tenggara; serta Kabupaten Pesisir Barat dengan Kabupaten Lampung Barat di Provinsi Lampung.
+
+</abstract>
+  <keywords vocabulary="Search keys">
+    <keyword>Basis Data Batas Wilayah Administrasi Desa/Kelurahan Edisi Juni 2026</keyword>
+  </keywords>
+  <contact>
+    <name>Khafid</name>
+    <organization>Direktorat Pemetaan Batas Wilayah dan Nama Rupabumi</organization>
+    <position>Direktur</position>
+    <voice></voice>
+    <fax></fax>
+    <email></email>
+    <role></role>
+  </contact>
+  <links/>
+  <history>Basis data batas wilayah administrasi desa/kelurahan Edisi Juni 2026 merupakan pemutakhiran dari basis data batas wilayah administrasi desa/kelurahan Edisi Desember 2025. Luas wilayah desa/kelurahan pada basis data batas wilayah administrasi dihitung mengacu pada Keputusan Deputi Bidang Informasi Geospasial Dasar Badan Informasi Geospasial Nomor 43 Tahun 2025 tentang Pedoman Perhitungan Teknis Penentuan Luas Wilayah Yang Dilaksanakan Oleh Badan Informasi Geospasial.</history>
+  <dates>
+    <date type="Created" value="2026-02-16T00:00:00"/>
+    <date type="Published" value="2026-02-16T00:00:00"/>
+    <date type="Revised" value="2026-02-16T00:00:00"/>
+  </dates>
+  <fees></fees>
+  <constraints type="Limitations of use">Data batas yang berstatus indikatif tidak dapat dijadikan referensi hukum. Jika ditemukan perbedaan data batas wilayah BIG dengan data Pemerintah Daerah, pengguna wajib melaporkannya kepada BIG untuk proses verifikasi dan pemutakhiran.</constraints>
+  <encoding></encoding>
+  <crs>
+    <spatialrefsys nativeFormat="Wkt">
+      <wkt>GEOGCRS["WGS 84",ENSEMBLE["World Geodetic System 1984 ensemble",MEMBER["World Geodetic System 1984 (Transit)"],MEMBER["World Geodetic System 1984 (G730)"],MEMBER["World Geodetic System 1984 (G873)"],MEMBER["World Geodetic System 1984 (G1150)"],MEMBER["World Geodetic System 1984 (G1674)"],MEMBER["World Geodetic System 1984 (G1762)"],MEMBER["World Geodetic System 1984 (G2139)"],MEMBER["World Geodetic System 1984 (G2296)"],ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]],ENSEMBLEACCURACY[2.0]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["Horizontal component of 3D system."],AREA["World."],BBOX[-90,-180,90,180]],ID["EPSG",4326]]</wkt>
+      <proj4>+proj=longlat +datum=WGS84 +no_defs</proj4>
+      <srsid>3452</srsid>
+      <srid>4326</srid>
+      <authid>EPSG:4326</authid>
+      <description>WGS 84</description>
+      <projectionacronym>longlat</projectionacronym>
+      <ellipsoidacronym>EPSG:7030</ellipsoidacronym>
+      <geographicflag>true</geographicflag>
+    </spatialrefsys>
+  </crs>
+  <extent>
+    <spatial miny="-11.00755200000000045" maxy="6.07674100000000017" dimensions="2" minx="94.97195000000000675" maxz="0" maxx="141.02004900000000021" crs="EPSG:4326" minz="0"/>
+    <temporal>
+      <period>
+        <start>2026-02-15T16:00:00Z</start>
+        <end></end>
+      </period>
+    </temporal>
+    <temporal>
+      <period>
+        <start></start>
+        <end></end>
+      </period>
+    </temporal>
+  </extent>
+</qgis>
